@@ -1,0 +1,9 @@
+# HELP net_if_admin_state Telegraf collected metric
+# TYPE net_if_admin_state gauge
+net_if_admin_state{host="<host>",interface="igc0"} 1
+# HELP net_if_info Telegraf collected metric
+# TYPE net_if_info gauge
+net_if_info{description="<desc>",host="<host>",interface="igc0",ip="<ip>>",mac="<mac>",vlan="none"} 1
+# HELP net_if_link_state Telegraf collected metric
+# TYPE net_if_link_state gauge
+net_if_link_state{host="<host>",interface="igc0"} 1

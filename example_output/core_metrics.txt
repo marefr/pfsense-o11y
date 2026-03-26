@@ -1,0 +1,376 @@
+# TYPE disk_free gauge
+disk_free{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 2.69795328e+08
+disk_free{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 1.06255085568e+11
+# HELP disk_inodes_free Telegraf collected metric
+# TYPE disk_inodes_free gauge
+disk_inodes_free{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 510
+disk_inodes_free{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 1.5011116e+07
+# HELP disk_inodes_total Telegraf collected metric
+# TYPE disk_inodes_total counter
+disk_inodes_total{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 512
+disk_inodes_total{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 1.5064062e+07
+# HELP disk_inodes_used Telegraf collected metric
+# TYPE disk_inodes_used gauge
+disk_inodes_used{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 2
+disk_inodes_used{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 52946
+# HELP disk_inodes_used_percent Telegraf collected metric
+# TYPE disk_inodes_used_percent gauge
+disk_inodes_used_percent{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 0.390625
+disk_inodes_used_percent{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 0.3514722655814879
+# HELP disk_total Telegraf collected metric
+# TYPE disk_total counter
+disk_total{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 2.72531456e+08
+disk_total{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 1.19338856448e+11
+# HELP disk_used Telegraf collected metric
+# TYPE disk_used gauge
+disk_used{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 2.736128e+06
+disk_used{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 3.536662528e+09
+# HELP disk_used_percent Telegraf collected metric
+# TYPE disk_used_percent gauge
+disk_used_percent{device="nvd0p1",fstype="msdosfs",host="<host>",mode="rw",path="/boot/efi"} 1.0039677768426114
+disk_used_percent{device="ufsid/6521bcc1f9d4f356",fstype="ufs",host="<host>",mode="rw",path="/"} 3.221246213246922
+# HELP diskio_io_time Telegraf collected metric
+# TYPE diskio_io_time counter
+diskio_io_time{host="<host>",name="da0"} 0
+diskio_io_time{host="<host>",name="nda0"} 143792
+diskio_io_time{host="<host>",name="pass0"} 0
+diskio_io_time{host="<host>",name="pass1"} 0
+# HELP diskio_iops_in_progress Telegraf collected metric
+# TYPE diskio_iops_in_progress counter
+diskio_iops_in_progress{host="<host>",name="da0"} 0
+diskio_iops_in_progress{host="<host>",name="nda0"} 0
+diskio_iops_in_progress{host="<host>",name="pass0"} 0
+diskio_iops_in_progress{host="<host>",name="pass1"} 0
+# HELP diskio_merged_reads Telegraf collected metric
+# TYPE diskio_merged_reads counter
+diskio_merged_reads{host="<host>",name="da0"} 0
+diskio_merged_reads{host="<host>",name="nda0"} 0
+diskio_merged_reads{host="<host>",name="pass0"} 0
+diskio_merged_reads{host="<host>",name="pass1"} 0
+# HELP diskio_merged_writes Telegraf collected metric
+# TYPE diskio_merged_writes counter
+diskio_merged_writes{host="<host>",name="da0"} 0
+diskio_merged_writes{host="<host>",name="nda0"} 0
+diskio_merged_writes{host="<host>",name="pass0"} 0
+diskio_merged_writes{host="<host>",name="pass1"} 0
+# HELP diskio_read_bytes Telegraf collected metric
+# TYPE diskio_read_bytes counter
+diskio_read_bytes{host="<host>",name="da0"} 0
+diskio_read_bytes{host="<host>",name="nda0"} 1.96529664e+08
+diskio_read_bytes{host="<host>",name="pass0"} 0
+diskio_read_bytes{host="<host>",name="pass1"} 0
+# HELP diskio_read_time Telegraf collected metric
+# TYPE diskio_read_time counter
+diskio_read_time{host="<host>",name="da0"} 0
+diskio_read_time{host="<host>",name="nda0"} 1045
+diskio_read_time{host="<host>",name="pass0"} 0
+diskio_read_time{host="<host>",name="pass1"} 0
+# HELP diskio_reads Telegraf collected metric
+# TYPE diskio_reads counter
+diskio_reads{host="<host>",name="da0"} 0
+diskio_reads{host="<host>",name="nda0"} 6976
+diskio_reads{host="<host>",name="pass0"} 0
+diskio_reads{host="<host>",name="pass1"} 0
+# HELP diskio_weighted_io_time Telegraf collected metric
+# TYPE diskio_weighted_io_time counter
+diskio_weighted_io_time{host="<host>",name="da0"} 0
+diskio_weighted_io_time{host="<host>",name="nda0"} 0
+diskio_weighted_io_time{host="<host>",name="pass0"} 0
+diskio_weighted_io_time{host="<host>",name="pass1"} 0
+# HELP diskio_write_bytes Telegraf collected metric
+# TYPE diskio_write_bytes counter
+diskio_write_bytes{host="<host>",name="da0"} 0
+diskio_write_bytes{host="<host>",name="nda0"} 5.3578681344e+10
+diskio_write_bytes{host="<host>",name="pass0"} 0
+diskio_write_bytes{host="<host>",name="pass1"} 0
+# HELP diskio_write_time Telegraf collected metric
+# TYPE diskio_write_time counter
+diskio_write_time{host="<host>",name="da0"} 0
+diskio_write_time{host="<host>",name="nda0"} 1.364577e+06
+diskio_write_time{host="<host>",name="pass0"} 0
+diskio_write_time{host="<host>",name="pass1"} 0
+# HELP diskio_writes Telegraf collected metric
+# TYPE diskio_writes counter
+diskio_writes{host="<host>",name="da0"} 0
+diskio_writes{host="<host>",name="nda0"} 1.569442e+06
+diskio_writes{host="<host>",name="pass0"} 0
+diskio_writes{host="<host>",name="pass1"} 0
+# HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 2.0827e-05
+go_gc_duration_seconds{quantile="0.25"} 2.0827e-05
+go_gc_duration_seconds{quantile="0.5"} 2.3509e-05
+go_gc_duration_seconds{quantile="0.75"} 2.3509e-05
+go_gc_duration_seconds{quantile="1"} 2.3509e-05
+go_gc_duration_seconds_sum 4.4336e-05
+go_gc_duration_seconds_count 2
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent
+# TYPE go_gc_gogc_percent gauge
+go_gc_gogc_percent 100
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes
+# TYPE go_gc_gomemlimit_bytes gauge
+go_gc_gomemlimit_bytes 9.223372036854776e+18
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 37
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.23.3"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 3.3578096e+07
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 3.9504072e+07
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 1.570606e+06
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 46794
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 3.361152e+06
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 3.3578096e+07
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 3.514368e+06
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 3.7609472e+07
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 87394
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 3.514368e+06
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 4.112384e+07
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 1.7745379103784177e+09
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 134188
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 4800
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 15600
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 242560
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 244800
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 6.119416e+07
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 1.01475e+06
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 819200
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 819200
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 4.8149948e+07
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads
+# TYPE go_sched_gomaxprocs_threads gauge
+go_sched_gomaxprocs_threads 4
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 11
+# HELP mem_active Telegraf collected metric
+# TYPE mem_active gauge
+mem_active{host="<host>"} 1.86396672e+08
+# HELP mem_available Telegraf collected metric
+# TYPE mem_available gauge
+mem_available{host="<host>"} 7.046176768e+09
+# HELP mem_available_percent Telegraf collected metric
+# TYPE mem_available_percent gauge
+mem_available_percent{host="<host>"} 84.89692985702935
+# HELP mem_buffered Telegraf collected metric
+# TYPE mem_buffered gauge
+mem_buffered{host="<host>"} 3.54476032e+08
+# HELP mem_cached Telegraf collected metric
+# TYPE mem_cached gauge
+mem_cached{host="<host>"} 0
+# HELP mem_free Telegraf collected metric
+# TYPE mem_free gauge
+mem_free{host="<host>"} 6.417416192e+09
+# HELP mem_inactive Telegraf collected metric
+# TYPE mem_inactive gauge
+mem_inactive{host="<host>"} 6.28760576e+08
+# HELP mem_laundry Telegraf collected metric
+# TYPE mem_laundry gauge
+mem_laundry{host="<host>"} 0
+# HELP mem_total Telegraf collected metric
+# TYPE mem_total counter
+mem_total{host="<host>"} 8.29968384e+09
+# HELP mem_used Telegraf collected metric
+# TYPE mem_used gauge
+mem_used{host="<host>"} 1.253507072e+09
+# HELP mem_used_percent Telegraf collected metric
+# TYPE mem_used_percent gauge
+mem_used_percent{host="<host>"} 15.103070142970651
+# HELP mem_wired Telegraf collected metric
+# TYPE mem_wired gauge
+mem_wired{host="<host>"} 7.88230144e+08
+# HELP net_bytes_recv Telegraf collected metric
+# TYPE net_bytes_recv counter
+net_bytes_recv{host="<host>",interface="igc0"} 4.90371845436e+11
+# HELP net_bytes_sent Telegraf collected metric
+# TYPE net_bytes_sent counter
+net_bytes_sent{host="<host>",interface="igc0"} 9.9476959164e+10
+# HELP net_drop_in Telegraf collected metric
+# TYPE net_drop_in counter
+net_drop_in{host="<host>",interface="igc0"} 0
+# HELP net_drop_out Telegraf collected metric
+# TYPE net_drop_out counter
+net_drop_out{host="<host>",interface="igc0"} 0
+# HELP net_err_in Telegraf collected metric
+# TYPE net_err_in counter
+net_err_in{host="<host>",interface="igc0"} 0
+# HELP net_err_out Telegraf collected metric
+# TYPE net_err_out counter
+net_err_out{host="<host>",interface="igc0"} 0
+# HELP net_packets_recv Telegraf collected metric
+# TYPE net_packets_recv counter
+net_packets_recv{host="<host>",interface="igc0"} 3.80275526e+08
+# HELP net_packets_sent Telegraf collected metric
+# TYPE net_packets_sent counter
+net_packets_sent{host="<host>",interface="igc0"} 1.19721886e+08
+# HELP net_speed Telegraf collected metric
+# TYPE net_speed counter
+net_speed{host="<host>",interface="igc0"} -1
+# HELP pf_bad_offset Telegraf collected metric
+# TYPE pf_bad_offset counter
+pf_bad_offset{host="<host>"} 0
+# HELP pf_bad_timestamp Telegraf collected metric
+# TYPE pf_bad_timestamp counter
+pf_bad_timestamp{host="<host>"} 0
+# HELP pf_congestion Telegraf collected metric
+# TYPE pf_congestion counter
+pf_congestion{host="<host>"} 0
+# HELP pf_entries Telegraf collected metric
+# TYPE pf_entries gauge
+pf_entries{host="<host>"} 2060
+# HELP pf_fragment Telegraf collected metric
+# TYPE pf_fragment counter
+pf_fragment{host="<host>"} 18
+# HELP pf_inserts Telegraf collected metric
+# TYPE pf_inserts counter
+pf_inserts{host="<host>"} 9.511778e+06
+# HELP pf_ip_option Telegraf collected metric
+# TYPE pf_ip_option counter
+pf_ip_option{host="<host>"} 6
+# HELP pf_match Telegraf collected metric
+# TYPE pf_match counter
+pf_match{host="<host>"} 1.008666e+07
+# HELP pf_memory Telegraf collected metric
+# TYPE pf_memory counter
+pf_memory{host="<host>"} 0
+# HELP pf_normalize Telegraf collected metric
+# TYPE pf_normalize counter
+pf_normalize{host="<host>"} 162
+# HELP pf_proto_cksum Telegraf collected metric
+# TYPE pf_proto_cksum counter
+pf_proto_cksum{host="<host>"} 0
+# HELP pf_removals Telegraf collected metric
+# TYPE pf_removals counter
+pf_removals{host="<host>"} 9.509718e+06
+# HELP pf_searches Telegraf collected metric
+# TYPE pf_searches counter
+pf_searches{host="<host>"} 1.455197734e+09
+# HELP pf_short Telegraf collected metric
+# TYPE pf_short counter
+pf_short{host="<host>"} 0
+# HELP pf_src_limit Telegraf collected metric
+# TYPE pf_src_limit counter
+pf_src_limit{host="<host>"} 0
+# HELP pf_state_insert Telegraf collected metric
+# TYPE pf_state_insert counter
+pf_state_insert{host="<host>"} 0
+# HELP pf_state_limit Telegraf collected metric
+# TYPE pf_state_limit counter
+pf_state_limit{host="<host>"} 0
+# HELP pf_state_mismatch Telegraf collected metric
+# TYPE pf_state_mismatch counter
+pf_state_mismatch{host="<host>"} 8673
+# HELP pf_synproxy Telegraf collected metric
+# TYPE pf_synproxy counter
+pf_synproxy{host="<host>"} 0
+# HELP processes_blocked Telegraf collected metric
+# TYPE processes_blocked gauge
+processes_blocked{host="<host>"} 18
+# HELP processes_idle Telegraf collected metric
+# TYPE processes_idle gauge
+processes_idle{host="<host>"} 49
+# HELP processes_running Telegraf collected metric
+# TYPE processes_running gauge
+processes_running{host="<host>"} 8
+# HELP processes_sleeping Telegraf collected metric
+# TYPE processes_sleeping gauge
+processes_sleeping{host="<host>"} 25
+# HELP processes_stopped Telegraf collected metric
+# TYPE processes_stopped gauge
+processes_stopped{host="<host>"} 0
+# HELP processes_total Telegraf collected metric
+# TYPE processes_total counter
+processes_total{host="<host>"} 103
+# HELP processes_unknown Telegraf collected metric
+# TYPE processes_unknown gauge
+processes_unknown{host="<host>"} 0
+# HELP processes_wait Telegraf collected metric
+# TYPE processes_wait gauge
+processes_wait{host="<host>"} 2
+# HELP processes_zombies Telegraf collected metric
+# TYPE processes_zombies gauge
+processes_zombies{host="<host>"} 1
+# HELP swap_free Telegraf collected metric
+# TYPE swap_free gauge
+swap_free{host="<host>"} 4.2949632e+09
+# HELP swap_in Telegraf collected metric
+# TYPE swap_in counter
+swap_in{host="<host>"} 0
+# HELP swap_out Telegraf collected metric
+# TYPE swap_out counter
+swap_out{host="<host>"} 0
+# HELP swap_total Telegraf collected metric
+# TYPE swap_total counter
+swap_total{host="<host>"} 4.2949632e+09
+# HELP swap_used Telegraf collected metric
+# TYPE swap_used gauge
+swap_used{host="<host>"} 0
+# HELP swap_used_percent Telegraf collected metric
+# TYPE swap_used_percent gauge
+swap_used_percent{host="<host>"} 0
+# HELP system_load1 Telegraf collected metric
+# TYPE system_load1 gauge
+system_load1{host="<host>"} 0.1015625
+# HELP system_load15 Telegraf collected metric
+# TYPE system_load15 gauge
+system_load15{host="<host>"} 0.07421875
+# HELP system_load5 Telegraf collected metric
+# TYPE system_load5 gauge
+system_load5{host="<host>"} 0.06982421875
+# HELP system_n_cpus Telegraf collected metric
+# TYPE system_n_cpus gauge
+system_n_cpus{host="<host>"} 4
+# HELP system_n_unique_users Telegraf collected metric
+# TYPE system_n_unique_users gauge
+system_n_unique_users{host="<host>"} 2
+# HELP system_n_users Telegraf collected metric
+# TYPE system_n_users gauge
+system_n_users{host="<host>"} 2
+# HELP system_uptime Telegraf collected metric
+# TYPE system_uptime counter
+system_uptime{host="<host>"} 1.201452e+06

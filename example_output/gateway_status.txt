@@ -1,0 +1,9 @@
+# HELP gateway_loss_ratio Telegraf collected metric
+# TYPE gateway_loss_ratio gauge
+gateway_loss_ratio{host="<host>",monitor_ip="<monitor ip>",name="<gateway name>"} 0
+# HELP gateway_rtt_milliseconds Telegraf collected metric
+# TYPE gateway_rtt_milliseconds gauge
+gateway_rtt_milliseconds{host="<host>",monitor_ip="<monitor ip>",name="<gateway name>"} 3.777
+# HELP gateway_rttsd_milliseconds Telegraf collected metric
+# TYPE gateway_rttsd_milliseconds gauge
+gateway_rttsd_milliseconds{host="<host>",monitor_ip="<monitor ip>",name="<gateway name>"} 10.039

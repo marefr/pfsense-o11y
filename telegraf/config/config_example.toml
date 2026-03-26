@@ -1,0 +1,134 @@
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_gateway_status.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_ifconfig.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+
+  ## If the "interface" tag matches any of these strings, drop the metric entirely.
+  [inputs.exec.tagdrop]
+    interface = [ "<interface name>"]
+
+[[inputs.ping]]
+  urls = ["<url 1>", "<url 2>"]
+  count = 5            # Send 5 pings per interval
+  ping_interval = 0.2  # Wait 200ms between those 5 pings
+  timeout = 1.0        # How long to wait for each individual response
+  method = "native"
+
+[[processors.enum]]
+  namepass = ["ping"]
+  [[processors.enum.mapping]]
+    tag = "url"
+    dest = "alias"
+    [processors.enum.mapping.value_mappings]
+      "<url 1>" = "DNS 1"
+      "<url 2>" = "DNS 2"
+
+[[inputs.haproxy]]
+  servers = ["http://127.0.0.1:2200/haproxy/haproxy_stats.php?haproxystats=1"]
+
+  ## The fieldpass array tells Telegraf to drop ALL HAProxy metrics
+  ## EXCEPT for the exact ones listed here.
+  fieldpass = [
+    "bin",
+    "bout",
+    "scur",
+    "ereq",
+    "eresp",
+    "http_response.2xx",
+    "http_response.4xx",
+    "http_response.5xx",
+    "check_duration",
+    "status"
+  ]
+
+[[outputs.prometheus_client]]
+  listen = ":9273"
+  metric_version = 2
+
+  ## Explicitly define Prometheus metric types using the final metric names.
+  ## Glob patterns (*) are fully supported.
+  [outputs.prometheus_client.metric_types]
+    # Gauges represent values that can go up and down.
+    # Our ping and packet loss metrics naturally belong here.
+    gauge = [
+      # Packet Filter Gauges
+      "pf_entries",
+
+      # Gateway Status Gauges
+      "gateway_rtt_milliseconds",
+      "gateway_loss_ratio",
+      "gateway_rttsd_milliseconds",
+
+      # Network Interface Gauges
+      "net_if_info",
+      "net_if_admin_state",
+      "net_if_link_state",
+
+      # Netstad Gauges
+      "netstat_tcp_*",
+      "netstat_udp_*",
+
+      # Ping Gauges
+      "ping_average_response_ms",
+      "ping_maximum_response_ms",
+      "ping_minimum_response_ms",
+      "ping_standard_deviation_ms",
+      "ping_percent_packet_loss",
+      "ping_result_code",
+      "ping_ttl",
+
+      # HAProxy Gauges
+      "haproxy_scur",
+      "haproxy_check_duration"
+    ]
+
+    # Counters represent cumulative metrics that only ever go up (or reset to 0).
+    # Useful if you add metrics later like total bytes or total errors.
+    counter = [
+      # Packet Filter Counters
+      "pf_searches",
+      "pf_inserts",
+      "pf_removals",
+      "pf_match",
+      "pf_state_mismatch",
+      "pf_fragment",
+      "pf_normalize",
+      "pf_bad_offset",
+      "pf_bad_timestamp",
+      "pf_short",
+      "pf_proto_cksum",
+      "pf_ip_option",
+      "pf_memory",
+      "pf_state_limit",
+      "pf_src_limit",
+      "pf_congestion",
+      "pf_state_insert",
+      "pf_synproxy",
+
+      # Network Interface Counters
+      "*_bytes_received",
+      "*_bytes_transmitted",
+
+      # Total and Error Counters
+      "*_total",
+      "*_errors",
+
+      # Ping Counters
+      "ping_packets_*",
+
+      # HAProxy Counters
+      "haproxy_bin",
+      "haproxy_bout",
+      "haproxy_ereq",
+      "haproxy_eresp",
+      "haproxy_http_response_*"
+    ]
