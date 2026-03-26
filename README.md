@@ -13,11 +13,36 @@ Observability setup for [pfSense](https://www.pfsense.org/), using [Telegraf](ht
 See [Telegraf](./telegraf/README.md) for details about custom input plugins and configurations used in this setup. See [config_example.toml](./telegraf/config/config_example.toml), for an example of a full configuration.
 
 **Table of contents:**
+- [Key Observability Metrics](#key-observability-metrics)
 - [Collected Metrics](#collected-metrics)
-- [Core Observability Pillars](#core-observability-pillars)
 - Grafana Dashboards TBD
 - [Prometheus metrics output examples](#prometheus-metrics-output-examples)
 - [Use of AI](#use-of-ai)
+
+## Key Observability Metrics
+
+The following metrics are the primary indicators for monitoring pfSense health and performance.
+
+### System Telemetry (Hardware & OS)
+* **`cpu_usage_idle`**: Primary indicator of processing headroom. Values consistently below 20% suggest the CPU is bottlenecked.
+* **`mem_used_percent`**: Vital for preventing stability issues. High usage often precedes system hangs or OOM events.
+* **`system_load1`**: Reflects the OS task queue. A load significantly higher than your CPU core count indicates congestion.
+* **`disk_used_percent`**: Critical to monitor on `/` and `/var`. If storage hits 100%, pfSense may fail to log or boot.
+
+### Network Connectivity
+* **`gateway_loss_ratio`**: **The single most important metric.** Even 1-2% packet loss significantly degrades real-time services like VoIP and gaming.
+* **`gateway_rtt_milliseconds`**: Tracks path latency to your ISP. Helps distinguish between local network issues and ISP-side slowness.
+* **`net_if_link_state`**: Hardware-level monitoring. Returns `0` if a cable is unplugged or a physical port fails.
+* **`ping_result_code`**: Confirms reachability of external dependencies (e.g., DNS). `0` is success; any other value indicates a service outage.
+
+### Connection & State Tracking
+* **`netstat_tcp_established`**: Monitors the volume of active sessions. Sudden spikes can indicate a misbehaving device or a security event.
+* **`pf_states`**: Tracks the firewall state table. If this hits your configured `state_limit`, new connections will be dropped.
+
+### Application Delivery (HAProxy)
+* **`haproxy_status`**: Real-time status of backend services (Home Assistant, etc.).
+* **`haproxy_http_response_5xx`**: Directly tracks server-side errors. A spike here means your users are seeing error pages.
+* **`haproxy_scur`**: Tracks current active users/connections per hosted service.
 
 ## Collected Metrics
 
@@ -193,28 +218,6 @@ These metrics identify failures in the communication between clients and your se
 - `haproxy_http_response_*`: Counts of specific HTTP status codes (2xx, 4xx, 5xx).
 
 ⭐ Critical for Monitoring: `haproxy_http_response_5xx`. A spike in 5xx errors means your users are seeing "Server Error" pages, indicating a critical failure in your backend services.
-
-## Core Observability Pillars
-
-To ensure maximum reliability, this stack focuses on four critical pillars of router health:
-
-### 1. System Health (The Vitals)
-* **CPU & Load**: Monitoring `cpu_usage_idle` and `system_load1` to ensure processing headroom.
-* **Memory/Swap**: Tracking `mem_used_percent` and `swap_used_percent` to prevent OOM (Out of Memory) crashes.
-* **Storage**: Monitoring `disk_used_percent` on `/` to prevent log-induced lockups.
-
-### 2. Connectivity & ISP Health
-* **Gateway Quality**: Monitoring `gateway_loss_ratio` and `gateway_rtt` for real-time ISP stability.
-* **Interface Integrity**: Using `net_if_link_state` to detect physical cable or port failures.
-* **Service Reachability**: Using `ping_result_code` to verify DNS and external dependency uptime.
-
-### 3. Traffic & Stateful Inspection
-* **Session Volume**: Monitoring `netstat_tcp_established` and `pf_states` to track active connection load.
-* **Throughput**: Measuring `net_bytes_recv/sent` per interface to identify bandwidth bottlenecks.
-
-### 4. Application Delivery (HAProxy)
-* **Service Status**: Real-time tracking of `haproxy_status` for all backend servers.
-* **Error Rates**: Monitoring `haproxy_http_response_5xx` to catch server-side failures before users report them.
 
 ## Prometheus metrics output examples
 See [example_output](./example_output/).
