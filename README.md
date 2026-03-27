@@ -67,7 +67,7 @@ A breakdown of the collected metrics and what specific ones are important to mon
 - [Hardware & Disk Health (SMART)](#hardware--disk-health-smart)
 - [Service Health](#service-health)
 - [Gateway Status Metrics](#gateway-status-metrics)
-- [Packet Filter Metrics (pf_)](#packet-filter-metrics-pf_)
+- [Packet Filter Metrics](#packet-filter-metrics)
 - [Network Interface Details & Status Metrics](#network-interface-details--status-metrics)
 - [VPN & Overlay Networks](#vpn--overlay-networks)
 - [Ping Metrics](#ping-metrics)
@@ -174,7 +174,7 @@ Unless you manually changed them in the pfSense GUI (under System > Routing > Ga
 - **Warning (Yellow):** Latency exceeds **250ms** OR Packet Loss exceeds **10%**.
 - **Offline / Down (Red):** Latency exceeds **500ms** OR Packet Loss exceeds **20%** (or hits 100% for a completely dead link).
 
-### Packet Filter Metrics (`pf_`)
+### Packet Filter Metrics
 
 These metrics are the absolute holy grail of pfSense monitoring. These `pf_` metrics tell you exactly what the core firewall engine itself is doing.
 
