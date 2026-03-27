@@ -13,6 +13,7 @@ Observability setup for [pfSense](https://www.pfsense.org/), using [Telegraf](ht
 See [Telegraf](./telegraf/README.md) for details about custom input plugins and configurations used in this setup. See [config_example.toml](./telegraf/config/config_example.toml), for an example of a full configuration.
 
 **Table of contents:**
+
 - [Key Observability Metrics](#key-observability-metrics)
 - [Collected Metrics](#collected-metrics)
 - Grafana Dashboards TBD
@@ -24,22 +25,36 @@ See [Telegraf](./telegraf/README.md) for details about custom input plugins and 
 The following metrics are the primary indicators for monitoring pfSense health and performance.
 
 ### System Telemetry (Hardware & OS)
+
 * **`cpu_usage_idle`**: Primary indicator of processing headroom. Values consistently below 20% suggest the CPU is bottlenecked.
 * **`mem_used_percent`**: Vital for preventing stability issues. High usage often precedes system hangs or OOM events.
 * **`system_load1`**: Reflects the OS task queue. A load significantly higher than your CPU core count indicates congestion.
 * **`disk_used_percent`**: Critical to monitor on `/` and `/var`. If storage hits 100%, pfSense may fail to log or boot.
 
+### Hardware Health & Services
+
+* **`smartctl_health_ok`**: Binary indicator of NVMe/Disk health. `1` is healthy, `0` indicates a failing drive.
+* **`pfsense_service_status`**: Real-time status of critical pfSense daemons (e.g., unbound, wireguard, telegraf).
+
 ### Network Connectivity
+
 * **`gateway_loss_ratio`**: **The single most important metric.** Even 1-2% packet loss significantly degrades real-time services like VoIP and gaming.
 * **`gateway_rtt_milliseconds`**: Tracks path latency to your ISP. Helps distinguish between local network issues and ISP-side slowness.
 * **`net_if_link_state`**: Hardware-level monitoring. Returns `0` if a cable is unplugged or a physical port fails.
 * **`ping_result_code`**: Confirms reachability of external dependencies (e.g., DNS). `0` is success; any other value indicates a service outage.
 
+### VPN & Overlay Networks
+
+* **`wireguard_peer_latest_handshake_seconds`**: The exact Unix epoch timestamp of the last successful WireGuard peer handshake. Used to detect stale/dead tunnels.
+* **`tailscale_backend_state`**: The current operating status of the Tailscale mesh node (e.g., `Running`, `NeedsLogin`).
+
 ### Connection & State Tracking
+
 * **`netstat_tcp_established`**: Monitors the volume of active sessions. Sudden spikes can indicate a misbehaving device or a security event.
 * **`pf_states`**: Tracks the firewall state table. If this hits your configured `state_limit`, new connections will be dropped.
 
 ### Application Delivery (HAProxy)
+
 * **`haproxy_status`**: Real-time status of backend services (Home Assistant, etc.).
 * **`haproxy_http_response_5xx`**: Directly tracks server-side errors. A spike here means your users are seeing error pages.
 * **`haproxy_scur`**: Tracks current active users/connections per hosted service.
@@ -49,9 +64,12 @@ The following metrics are the primary indicators for monitoring pfSense health a
 A breakdown of the collected metrics and what specific ones are important to monitor.
 
 - [System Metrics](#system-metrics)
+- [Hardware & Disk Health (SMART)](#hardware--disk-health-smart)
+- [Service Health](#service-health)
 - [Gateway Status Metrics](#gateway-status-metrics)
-- [Packet Filter Metrics](#packet-filter-metrics-pf_)
+- [Packet Filter Metrics (pf_)](#packet-filter-metrics-pf_)
 - [Network Interface Details & Status Metrics](#network-interface-details--status-metrics)
+- [VPN & Overlay Networks](#vpn--overlay-networks)
 - [Ping Metrics](#ping-metrics)
 - [Netstat Metrics](#netstat-metrics)
 - [HAProxy Metrics](#haproxy-metrics)
@@ -62,57 +80,87 @@ A breakdown of the collected metrics and what specific ones are important to mon
 - [Memory & Swap Metrics](#memory--swap-metrics)
 - [Disk & I/O Metrics](#disk--io-metrics)
 - [Processes & System Metrics](#processes--system-metrics)
-- [Uptime Metrics](#uptime-metric)
+- [Uptime Metric](#uptime-metric)
 
 #### CPU Metrics
+
 These metrics indicate how much processing power is being consumed and by what.
+
 - `cpu_usage_idle`: The percentage of time the CPU is not doing any work.
 - `cpu_usage_system`: Time spent by the CPU on kernel-level tasks (e.g., handling firewall rules or network traffic).
 - `cpu_usage_user`: Time spent on user-level applications (e.g., HAProxy or the WebGUI).
 - `cpu_usage_iowait`: Time the CPU spends waiting for disk I/O. If this is high, your disk may be a bottleneck.
 
-⭐ Critical for Monitoring: `cpu_usage_idle` (to see overall headroom) and `cpu_usage_system` (to identify if heavy networking/firewalling is taxing the system).
+⭐ **Critical for Monitoring:** `cpu_usage_idle` (to see overall headroom) and `cpu_usage_system` (to identify if heavy networking/firewalling is taxing the system).
 
 #### Memory & Swap Metrics
+
 These metrics track how your router's RAM is being utilized.
+
 - `mem_used_percent`: The overall percentage of RAM in use.
 - `mem_available`: The amount of RAM immediately available for new processes.
 - `swap_used_percent`: The percentage of swap space (on-disk "emergency" memory) currently in use.
 
-⭐ Critical for Monitoring: `mem_used_percent`. If this stays consistently high, you risk the system becoming unstable. Monitoring `swap_used_percent` is also vital; if swap is being used heavily, it often indicates you have run out of physical RAM.
+⭐ **Critical for Monitoring:** `mem_used_percent`. If this stays consistently high, you risk the system becoming unstable. Monitoring `swap_used_percent` is also vital; if swap is being used heavily, it often indicates you have run out of physical RAM.
 
 #### Disk & I/O Metrics
+
 These track storage space and the speed of reading/writing to your disk.
+
 - `disk_used_percent`: Percentage of disk space consumed on your partitions (e.g., / or /var).
 - `diskio_io_time`: The total time spent on I/O operations for a specific disk.
 - `diskio_read_bytes` / `diskio_write_bytes`: The actual throughput of data being moved to/from storage.
 
-⭐ Critical for Monitoring: `disk_used_percent` on the root (/) partition. If this hits 100%, pfSense can fail to boot or log data, leading to a crash.
+⭐ **Critical for Monitoring:** `disk_used_percent` on the root (/) partition. If this hits 100%, pfSense can fail to boot or log data, leading to a crash.
 
 #### Processes & System Metrics
+
 These provide a high-level overview of system activity and resource queuing.
+
 - `system_load1` / `load5` / `load15`: The system load average over 1, 5, and 15 minutes.
 - `processes_running`: The number of processes currently active.
 - `processes_total`: The total number of processes in the system.
 
-⭐ Critical for Monitoring: `system_load1`. A load average significantly higher than your CPU core count (e.g., >4 on a 4-core system) suggests a backlog of work that can lead to network latency.
+⭐ **Critical for Monitoring:** `system_load1`. A load average significantly higher than your CPU core count (e.g., >4 on a 4-core system) suggests a backlog of work that can lead to network latency.
 
 #### Uptime Metric
 
-`system_uptime`: The total time in seconds the system has been running since the last reboot.
+- `system_uptime`: The total time in seconds the system has been running since the last reboot.
 
-⭐ Critical for Monitoring: `system_uptime`. Sudden drops in uptime indicate an unexpected reboot or crash, which is a key trigger for troubleshooting.
+⭐ **Critical for Monitoring:** `system_uptime`. Sudden drops in uptime indicate an unexpected reboot or crash, which is a key trigger for troubleshooting.
+
+### Hardware & Disk Health (SMART)
+
+> [!NOTE]
+> To use/configure, see [Telegraf](./telegraf/README.md).
+
+These metrics monitor the physical health of the underlying storage (like NVMe SSDs).
+
+- `smartctl_health_ok`: Overall pass/fail state of the drive.
+- `smartctl_temperature`: Operating temperature of the drive in Celsius.
+- `smartctl_percentage_used`: The percentage of the manufacturer's estimated lifespan that has been consumed.
+- `smartctl_unsafe_shutdowns`: Number of times the device lost power without a clean shutdown sequence.
+
+⭐ **Critical for Monitoring:** `smartctl_temperature` (alert if > 65°C on passively cooled boxes) and `smartctl_health_ok`.
+
+### Service Health
+
+Monitors the up/down state of core pfSense daemons and services.
+
+- `pfsense_service_status`: Returns `1` if the service (e.g., `dpinger`, `unbound`, `telegraf`, `wireguard`) is actively running in the process table, and `0` if it has crashed or stopped.
 
 ### Gateway Status Metrics
+
 > [!NOTE]
 > To use/configure, see [Telegraf](./telegraf/README.md).
 
 These metrics monitor the health of your WAN link and additional uplinks by measuring communication with a target monitor IP.
+
 - `gateway_rtt_milliseconds`: The average Round Trip Time (RTT) to the monitor IP. High RTT indicates latency on the link.
 - `gateway_loss_ratio`: The percentage of packet loss detected on the gateway. Any value above 0 is a sign of connection instability.
 - `gateway_rttsd_milliseconds`: The standard deviation of the RTT, often used to measure "jitter". High jitter can degrade real-time services like VoIP or gaming.
 
-⭐ Critical for Monitoring: `gateway_loss_ratio` and `gateway_rtt_milliseconds`. These are the most direct indicators of whether your internet connection is stable or struggling.
+⭐ **Critical for Monitoring:** `gateway_loss_ratio` and `gateway_rtt_milliseconds`. These are the most direct indicators of whether your internet connection is stable or struggling.
 
 #### How does pfSense derive the gateway status?
 
@@ -121,25 +169,27 @@ In pfSense, a gateway isn't just a simple "on/off" switch. Because networks fluc
 It evaluates the **Packet Loss** and **Latency (RTT)** and assigns a status based on how high those numbers get.
 
 Unless you manually changed them in the pfSense GUI (under System > Routing > Gateways > Edit (Advanced)), pfSense uses these default thresholds to determine the gateway's state:
+
 - **Online (Green):** Everything is operating normally.
 - **Warning (Yellow):** Latency exceeds **250ms** OR Packet Loss exceeds **10%**.
 - **Offline / Down (Red):** Latency exceeds **500ms** OR Packet Loss exceeds **20%** (or hits 100% for a completely dead link).
 
 ### Packet Filter Metrics (`pf_`)
+
 These metrics are the absolute holy grail of pfSense monitoring. These `pf_` metrics tell you exactly what the core firewall engine itself is doing.
 
 The `pf` stands for Packet Filter, which is the kernel-level firewall engine built into FreeBSD that powers pfSense. When you look at these metrics, you are looking directly at the brain of your firewall.
 
 - [Current State Metrics](#current-state-metrics)
 - [Lifetime Traffic Metrics](#lifetime-traffic-metrics)
-- [Validation & Errors Metrics](#lifetime-traffic-metrics)
+- [Validation & Errors Metrics](#validation--errors-metrics)
 - [Resource Exhaustion Metrics](#resource-exhaustion-metrics)
 
 #### Current State Metrics
 
- - `pf_entries`: This is the current number of active connections (states) your firewall is tracking right now. Every time a device opens a website or starts a download, a "state" is created. If this number hits your firewall's maximum state limit, pfSense will completely stop routing new traffic.
+- `pf_entries`: This is the current number of active connections (states) your firewall is tracking right now. Every time a device opens a website or starts a download, a "state" is created. If this number hits your firewall's maximum state limit, pfSense will completely stop routing new traffic.
 
-⭐ Critical for Monitoring: `pf_entries` is the single most important metric to monitor.
+⭐ **Critical for Monitoring:** `pf_entries` is the single most important metric to monitor.
 
 #### Lifetime Traffic Metrics
 
@@ -162,64 +212,91 @@ The `pf` stands for Packet Filter, which is the kernel-level firewall engine bui
 - `pf_congestion`: Drops due to severe kernel queuing congestion.
 
 ### Network Interface Details & Status Metrics
+
 > [!NOTE]
 > To use/configure, see [Telegraf](./telegraf/README.md).
 
 While the default net plugin provides traffic volume, these specific metrics track the physical and logical state of your interfaces.
+
 - `net_if_link_state`: Indicates if a physical connection is detected (1 for active, 0 for no carrier).
 - `net_if_admin_state`: Shows if the interface is logically enabled in the pfSense configuration (1 for up, 0 for down).
 - `net_if_info`: A metadata metric that carries important tags like ip, mac, vlan, and the pfSense description.
 
-⭐ Critical for Monitoring: `net_if_link_state`. Monitoring this allows you to immediately detect if a cable has been unplugged or a physical port has failed.
+⭐ **Critical for Monitoring:** `net_if_link_state`. Monitoring this allows you to immediately detect if a cable has been unplugged or a physical port has failed.
+
+### VPN & Overlay Networks
+
+> [!NOTE]
+> To use/configure, see [Telegraf](./telegraf/README.md).
+
+These metrics track the health of encrypted tunnels (Wireguard) and mesh networks (Tailscale).
+
+- `wireguard_peer_latest_handshake_seconds`: The raw Unix Epoch timestamp of the last data exchange for a specific peer. Subtract this from the current time to get the "age" of the tunnel.
+- `tailscale_backend_state`: This maps the internal daemon state. A value of `1` where `state_desc="Running"` indicates a healthy connection to the Tailnet.
+
+⭐ **Critical for Monitoring:** Monitor for `(time() - wireguard_peer_latest_handshake_seconds > 180)` to catch dead WireGuard peers, and alert if `tailscale_backend_state{state_desc="Running"} == 0`.
 
 ### Ping Metrics
+
+> [!NOTE]
+> To use/configure, see [Telegraf](./telegraf/README.md).
+
 These metrics allow to monitor specific external targets (like your DNS servers) independently of the gateway monitor.
+
 - `ping_average_response_ms`: The average response time for your targeted pings.
 - `ping_percent_packet_loss`: The percentage of pings that failed to return a response.
 - `ping_result_code`: A binary indicator where 0 means success and any other number indicates a failure to reach the target.
 
-⭐ Critical for Monitoring: `ping_result_code`. It is the simplest way to alert on the total unavailability of a critical external dependency like a DNS server.
-
-To use/configure custom Ping metrics, see [Telegraf](./telegraf/README.md).
+⭐ **Critical for Monitoring:** `ping_result_code`. It is the simplest way to alert on the total unavailability of a critical external dependency like a DNS server.
 
 ### Netstat Metrics
+
 > [!NOTE]
 > To use/configure, check the `Enable Netstat Monitor` in the Telegraf GUI settings.
 
 These metrics provide visibility into the network stack's current workload and state.
+
 - `netstat_tcp_established`: The number of currently active, established TCP connections.
 - `netstat_tcp_listen`: The number of ports currently listening for incoming connections.
 - `netstat_udp_socket`: The total count of active UDP sockets.
 
-⭐ Critical for Monitoring: `netstat_tcp_established`. A sudden spike in established connections can indicate a surge in legitimate traffic, a misbehaving application, or a potential security event like a DDoS attack.
+⭐ **Critical for Monitoring:** `netstat_tcp_established`. A sudden spike in established connections can indicate a surge in legitimate traffic, a misbehaving application, or a potential security event like a DDoS attack.
 
 ### HAProxy Metrics
+
 > [!NOTE]
 > To use/configure custom HAProxy metrics, see [Telegraf](./telegraf/README.md).
 
 #### Traffic & Throughput Metrics
-These metrics track the volume of data flowing through your frontends and backends.
-- `haproxy_bin` / `haproxy_bout`: The total bytes received (bin) and sent (bout). This is essential for understanding your bandwidth consumption per proxy.
-`haproxy_scur`: The number of current active sessions. This tells you how many users or devices are connected to a specific service at any given moment.
 
-⭐ Critical for Monitoring: `haproxy_scur`. Monitoring active sessions helps you identify traffic spikes and ensure your services aren't hitting connection limits.
+These metrics track the volume of data flowing through your frontends and backends.
+
+- `haproxy_bin` / `haproxy_bout`: The total bytes received (bin) and sent (bout). This is essential for understanding your bandwidth consumption per proxy.
+- `haproxy_scur`: The number of current active sessions. This tells you how many users or devices are connected to a specific service at any given moment.
+
+⭐ **Critical for Monitoring:** `haproxy_scur`. Monitoring active sessions helps you identify traffic spikes and ensure your services aren't hitting connection limits.
 
 #### Health & Availability Metrics
+
 These metrics tell you if HAProxy can actually talk to your backend servers.
+
 - `haproxy_status`: This is a label-based indicator (e.g., UP, DOWN, OPEN, no check). It is the most direct way to see if a backend server is healthy or failing health checks.
 - `haproxy_check_duration`: The time (in milliseconds) it took to perform the last health check. A sudden increase can indicate that a backend server is becoming slow or unresponsive.
 
-⭐ Critical for Monitoring: `haproxy_status`. You should alert immediately if any production backend status moves to DOWN.
+⭐ **Critical for Monitoring:** `haproxy_status`. You should alert immediately if any production backend status moves to DOWN.
 
 #### Error Tracking Metrics
+
 These metrics identify failures in the communication between clients and your servers.
+
 - `haproxy_ereq`: Total number of request errors from clients. High numbers often indicate bad client behavior or misconfigured frontends.
 - `haproxy_eresp`: Total number of response errors from backend servers. This is a clear indicator of server-side instability.
 - `haproxy_http_response_*`: Counts of specific HTTP status codes (2xx, 4xx, 5xx).
 
-⭐ Critical for Monitoring: `haproxy_http_response_5xx`. A spike in 5xx errors means your users are seeing "Server Error" pages, indicating a critical failure in your backend services.
+⭐ **Critical for Monitoring:** `haproxy_http_response_5xx`. A spike in 5xx errors means your users are seeing "Server Error" pages, indicating a critical failure in your backend services.
 
 ## Prometheus metrics output examples
+
 See [example_output](./example_output/).
 
 ## Use of AI
