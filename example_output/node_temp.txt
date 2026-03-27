@@ -1,0 +1,6 @@
+# HELP node_temp_celsius Telegraf collected metric
+# TYPE node_temp_celsius gauge
+node_temp_celsius{core="0",host="<host>"} 88
+node_temp_celsius{core="1",host="<host>"} 90
+node_temp_celsius{core="2",host="<host>"} 89
+node_temp_celsius{core="3",host="<host>"} 90

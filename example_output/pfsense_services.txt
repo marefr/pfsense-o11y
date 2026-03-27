@@ -1,0 +1,15 @@
+# HELP pfsense_service_status Telegraf collected metric
+# TYPE pfsense_service_status gauge
+pfsense_service_status{host="pfsense.local.lan",name="avahi"} 1
+pfsense_service_status{host="pfsense.local.lan",name="bsnmpd"} 1
+pfsense_service_status{host="pfsense.local.lan",name="dhcpd"} 1
+pfsense_service_status{host="pfsense.local.lan",name="dpinger"} 1
+pfsense_service_status{host="pfsense.local.lan",name="haproxy"} 1
+pfsense_service_status{host="pfsense.local.lan",name="miniupnpd"} 1
+pfsense_service_status{host="pfsense.local.lan",name="ntpd"} 1
+pfsense_service_status{host="pfsense.local.lan",name="sshd"} 1
+pfsense_service_status{host="pfsense.local.lan",name="syslogd"} 1
+pfsense_service_status{host="pfsense.local.lan",name="tailscale"} 1
+pfsense_service_status{host="pfsense.local.lan",name="telegraf"} 1
+pfsense_service_status{host="pfsense.local.lan",name="unbound"} 1
+pfsense_service_status{host="pfsense.local.lan",name="wireguard"} 1

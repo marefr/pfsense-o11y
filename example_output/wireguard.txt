@@ -1,0 +1,3 @@
+# HELP wireguard_peer_latest_handshake_seconds Telegraf collected metric
+# TYPE wireguard_peer_latest_handshake_seconds gauge
+wireguard_peer_latest_handshake_seconds{endpoint="<ip:port>",host="<host>",interface="<interface>",peer="<public key>"} 1.774597838e+09

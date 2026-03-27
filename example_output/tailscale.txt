@@ -1,0 +1,8 @@
+# HELP tailscale_backend_state Telegraf collected metric
+# TYPE tailscale_backend_state gauge
+tailscale_backend_state{host="<host>",state_desc="LoadingConfig"} 0
+tailscale_backend_state{host="<host>",state_desc="NeedsLogin"} 0
+tailscale_backend_state{host="<host>",state_desc="NoState"} 0
+tailscale_backend_state{host="<host>",state_desc="Running"} 1
+tailscale_backend_state{host="<host>",state_desc="Stopped"} 0
+tailscale_backend_state{host="<host>",state_desc="Unknown"} 0

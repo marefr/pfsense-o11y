@@ -1,0 +1,12 @@
+# HELP node_netstat_mbuf_current Telegraf collected metric
+# TYPE node_netstat_mbuf_current gauge
+node_netstat_mbuf_current{host="pfsense.local.lan"} 12861
+# HELP node_netstat_mbuf_free Telegraf collected metric
+# TYPE node_netstat_mbuf_free gauge
+node_netstat_mbuf_free{host="pfsense.local.lan"} 5909
+# HELP node_netstat_mbuf_limit Telegraf collected metric
+# TYPE node_netstat_mbuf_limit gauge
+node_netstat_mbuf_limit{host="pfsense.local.lan"} 1e+06
+# HELP node_netstat_mbuf_total Telegraf collected metric
+# TYPE node_netstat_mbuf_total gauge
+node_netstat_mbuf_total{host="pfsense.local.lan"} 18770

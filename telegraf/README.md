@@ -2,7 +2,19 @@
 
 See [config_example.toml](./config/config_example.toml) for an example of a full configuration.
 
+- [Custom Input Plugins](#custom-input-plugins)
+- [Other Input Plugin Configurations](#other-input-plugin-configurations)
+
 ## Custom Input Plugins
+
+- [Gateway Status](#gateway-status)
+- [Network Interface Details & Status](#network-interface-details--status)
+- [System Info & Metadata](#system-info--metadata)
+- [CPU Temperature](#cpu-temperature)
+- [Service Status](#service-status)
+- [MBUF Usage](#mbuf-usage)
+- [Wireguard Peer Latest Handshake](#wireguard-peer-latest-handshake)
+- [Tailscale Backend State](#tailscale-backend-state)
 
 ### Gateway status
 
@@ -20,7 +32,7 @@ gateway,name=<name>,monitor_ip=<ip> rtt_milliseconds=0.042,rttsd_milliseconds=0.
 1. Put `scripts/telegraf_gateway_status.sh` in /usr/local/bin/
 2. Make it executable
 ```shell
-chmod +x /usr/local/bin/telegraf_gateway_status.sh
+chmod 755 /usr/local/bin/telegraf_gateway_status.sh
 ```
 3. Configure telegraf config and add
 ```toml
@@ -41,7 +53,7 @@ This plugin extracts physical and logical interface metadata and operational sta
 
 Example output:
 ```shell
-> /usr/local/bin/telegraf_ifconfig.sh
+> /usr/local/bin/telegraf_net_if.sh
 net_if,interface=igc0,mac=<mac>,ip=<ip>,vlan=<vlan nr or none>,description=<desc> info=1
 net_if_admin,interface=igc0 state=1
 net_if_link,interface=igc0 state=1
@@ -50,16 +62,16 @@ net_if_link,interface=igc0 state=1
 
 ### Installation & Setup
 
-1. Put `scripts/telegraf_ifconfig.sh` in /usr/local/bin/
+1. Put `scripts/telegraf_net_if.sh` in /usr/local/bin/
 2. Make it executable
 ```shell
-chmod +x /usr/local/bin/telegraf_ifconfig.sh
+chmod 755 /usr/local/bin/telegraf_net_if.sh
 ```
 3. Configure telegraf config and add
 ```toml
 [[inputs.exec]]
   commands = [
-    "/usr/local/bin/telegraf_ifconfig.sh"
+    "/usr/local/bin/telegraf_net_if.sh"
   ]
   timeout = "5s"
   data_format = "influx"
@@ -72,13 +84,219 @@ chmod +x /usr/local/bin/telegraf_ifconfig.sh
 #### Prometheus metrics output example
 See [example_output](./../example_output/net_if.txt).
 
-## Custom Input Configurations
+### System Info & Metadata
 
-Rather than using the builtin configurations of pfSense Telegraf package, we use custom ones that allows greater flexibility.
+This plugin extracts additional system infomration and metadata, trying to mimic the Prometheus Node Exporter metric `node_uname_info`.
 
-### Custom Ping Configuration
+Example output:
+```shell
+> /usr/local/bin/telegraf_node_uname.sh
+node_uname,nodename=<nodename>,sysname=FreeBSD,release=15.0-CURRENT,version=FreeBSD\ 15.0-CURRENT\ #21\ RELENG_2_8_1-n256095-47c932dcc0e9:\ Thu\ Aug\ 28\ 16:27:48\ UTC\ 2025\ \ \ \ \ root@pfsense-build-release-amd64-1.eng.atx.netgate.com:/var/jenkins/workspace/pfSense-CE-snapshots-2_8_1-main/obj/amd64/AupY3aTL/var/jenkins/workspace/pfSense-CE-snapshots-2_8_1-main/sources/FreeBSD-src-RELENG_2_8_1/amd64.amd64/sys/pfSense,machine=amd64 info=1
+```
 
-To allow for additional configuration options you can use a custom ping configuration. When using below configuration, make sure to not check `Enable Ping Monitor` when configuring Telegraf in the GUI.
+### Installation & Setup
+
+1. Put `scripts/telegraf_node_uname.sh` in /usr/local/bin/
+2. Make it executable
+```shell
+chmod 755 /usr/local/bin/telegraf_node_uname.sh
+```
+3. Configure telegraf config and add
+```toml
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_node_uname.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+```
+
+#### Prometheus metrics output example
+See [example_output](./../example_output/node_uname.txt).
+
+### CPU Temperature
+
+This plugin extracts CPU temperature per core.
+
+Example output:
+```shell
+> /usr/local/bin/telegraf_node_temp.sh
+node_temp,core=3 celsius=70.0
+node_temp,core=2 celsius=70.0
+node_temp,core=1 celsius=69.0
+node_temp,core=0 celsius=68.0
+```
+
+### Installation & Setup
+
+1. Put `scripts/telegraf_node_temp.sh` in /usr/local/bin/
+2. Make it executable
+```shell
+chmod 755 /usr/local/bin/telegraf_node_temp.sh
+```
+3. Configure telegraf config and add
+```toml
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_node_temp.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+```
+
+#### Prometheus metrics output example
+See [example_output](./../example_output/node_temp.txt).
+
+### Service Status
+
+This plugin extracts status of pfSense services.
+
+Example output:
+```shell
+> /usr/local/bin/telegraf_pfsense_services.sh
+pfsense_service,name=wireguard status=1i
+pfsense_service,name=avahi status=1i
+pfsense_service,name=haproxy status=1i
+pfsense_service,name=tailscale status=1i
+pfsense_service,name=telegraf status=1i
+pfsense_service,name=unbound status=1i
+pfsense_service,name=ntpd status=1i
+pfsense_service,name=syslogd status=1i
+pfsense_service,name=dhcpd status=1i
+pfsense_service,name=dpinger status=1i
+pfsense_service,name=bsnmpd status=1i
+pfsense_service,name=miniupnpd status=1i
+pfsense_service,name=sshd status=1i
+```
+
+### Installation & Setup
+
+1. Put `scripts/telegraf_pfsense_services.sh` in /usr/local/bin/
+2. Make it executable
+```shell
+chmod 755 /usr/local/bin/telegraf_pfsense_services.sh
+```
+3. Configure telegraf config and add
+```toml
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_pfsense_services.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+```
+
+#### Prometheus metrics output example
+See [example_output](./../example_output/pfsense_services.txt).
+
+### MBUF Usage
+
+This plugin extracts `MBUF Usage` as can be seen on the system information widget in the pfSense dashboard.
+
+Example output:
+```shell
+> /usr/local/bin/telegraf_node_netstat_mbuf.sh
+node_netstat_mbuf current=12860i,free=5910i,total=18770i,limit=1000000i
+```
+
+### Installation & Setup
+
+1. Put `scripts/telegraf_node_netstat_mbuf.sh` in /usr/local/bin/
+2. Make it executable
+```shell
+chmod 755 /usr/local/bin/telegraf_node_netstat_mbuf.sh
+```
+3. Configure telegraf config and add
+```toml
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_node_netstat_mbuf.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+```
+
+#### Prometheus metrics output example
+See [example_output](./../example_output/node_netstat_mbuf.txt).
+
+### Wireguard Peer Latest Handshake
+
+This plugin extracts latest handshake (timestamp in seconds) of Wireguard peers.
+
+Example output:
+```shell
+> /usr/local/bin/telegraf_wireguard.sh
+wireguard_peer,interface=<interface>,peer=<public key>,endpoint=<ip;port> latest_handshake_seconds=1774600244i
+```
+
+### Installation & Setup
+
+1. Put `scripts/telegraf_wireguard.sh` in /usr/local/bin/
+2. Make it executable
+```shell
+chmod 755 /usr/local/bin/telegraf_wireguard.sh
+```
+3. Configure telegraf config and add
+```toml
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_wireguard.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+```
+
+#### Prometheus metrics output example
+See [example_output](./../example_output/wireguard.txt).
+
+### Tailscale Backend State
+
+This plugin extracts backend state of Tailscale.
+
+Example output:
+```shell
+>  /usr/local/bin/telegraf_tailscale.sh
+tailscale_backend,state_desc=Running state=1i
+tailscale_backend,state_desc=NeedsLogin state=0i
+tailscale_backend,state_desc=Stopped state=0i
+tailscale_backend,state_desc=NoState state=0i
+tailscale_backend,state_desc=LoadingConfig state=0i
+tailscale_backend,state_desc=Unknown state=0i
+```
+
+### Installation & Setup
+
+1. Put `scripts/telegraf_tailscale.sh` in /usr/local/bin/
+2. Make it executable
+```shell
+chmod 755 /usr/local/bin/telegraf_tailscale.sh
+```
+3. Configure telegraf config and add
+```toml
+[[inputs.exec]]
+  commands = [
+    "/usr/local/bin/telegraf_tailscale.sh"
+  ]
+  timeout = "5s"
+  data_format = "influx"
+```
+
+#### Prometheus metrics output example
+See [example_output](./../example_output/tailscale.txt).
+
+## Other Input Plugin Configurations
+
+Rather than using the builtin configurations of pfSense Telegraf package, we use custom ones that allows greater flexibility, together with some additional ones not provided out of the box by the pfSense Telegraf package.
+
+- [Ping Configuration](#ping-configuration)
+- [S.M.A.R.T. Hard Disk Status Configuration](#smart-hard-disk-status-configuration)
+- [HAProxy Configuration](#haproxy-configuration)
+- [Network Time Protocol Query Configuration](#network-time-protocol-query-configuration)
+- [x509 Certificate Configuration](#x509-certificate-configuration)
+
+### Ping Configuration
+
+To allow for additional configuration options you can use a the [Ping Input Plugin](https://docs.influxdata.com/telegraf/v1/input-plugins/ping/) with a custom configuration. When using below configuration, make sure to not check `Enable Ping Monitor` when configuring Telegraf in the GUI.
 
 ```toml
 [[inputs.ping]]
@@ -99,9 +317,19 @@ To allow for additional configuration options you can use a custom ping configur
       "192.165.9.158" = "OVPN DNS 2"
 ```
 
-### Custom HAProxy Configuration
+### S.M.A.R.T. Hard Disk Status Configuration
 
-If you have the HAProxy package/service installed on your pfSense this custom configuration collects the metrics that matters the most. When using below configuration, make sure to not check `Enable HAProxy Status Reporting` when configuring Telegraf in the GUI.
+The [smartctl JSON Input Plugin](https://docs.influxdata.com/telegraf/v1/input-plugins/smartctl/) collects S.M.A.R.T. information of storage devices using the `smartmontools` package / `smartctl` tool, which should be installed by default. See [pfSense S.M.A.R.T. Hard Disk Status](https://docs.netgate.com/pfsense/en/latest/monitoring/status/smart.html) for more information.
+
+```toml
+[[inputs.smartctl]]
+  path = "/usr/local/sbin/smartctl"
+  devices_include = [ "<storage device, e.g. /dev/nvme0>" ]
+```
+
+### HAProxy Configuration
+
+If you have the HAProxy package/service installed on your pfSense this [HAProxy Input Plugin](https://docs.influxdata.com/telegraf/v1/input-plugins/haproxy/) collects the metrics that matters the most. When using below configuration, make sure to not check `Enable HAProxy Status Reporting` when configuring Telegraf in the GUI.
 
 ```toml
 [[inputs.haproxy]]
@@ -120,4 +348,24 @@ If you have the HAProxy package/service installed on your pfSense this custom co
     "http_response.5xx",
     "check_duration"
   ]
+```
+
+### Network Time Protocol Query Configuration
+
+The [Network Time Protocol Query Input Plugin](https://docs.influxdata.com/telegraf/v1/input-plugins/ntpq/) collects metrics about Network Time Protocol queries.
+
+```toml
+[[inputs.ntpq]]
+  ## Use -p to list peers and -n to keep it numeric (no DNS)
+  options = "-p -n"
+```
+
+### x509 Certificate Configuration
+
+The [x509 Certificate Input Plugin](https://docs.influxdata.com/telegraf/v1/input-plugins/x509_cert/) collects information about X.509 certificates, e.g. certificates generated by the [ACME package](https://docs.netgate.com/pfsense/en/latest/packages/acme/index.html).
+
+```toml
+[[inputs.x509_cert]]
+  sources = ["/conf/acme/<cert>.crt"]
+  tls_ca = "/conf/acme/<ca>.ca"
 ```
