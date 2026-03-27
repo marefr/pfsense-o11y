@@ -18,6 +18,7 @@ See [Telegraf](./telegraf/README.md) for details about custom input plugins and 
 - [Collected Metrics](#collected-metrics)
 - Grafana Dashboards TBD
 - [Prometheus metrics output examples](#prometheus-metrics-output-examples)
+- [Contributing](#contributing)
 - [Use of AI](#use-of-ai)
 
 ## Key Observability Metrics
@@ -298,6 +299,13 @@ These metrics identify failures in the communication between clients and your se
 ## Prometheus metrics output examples
 
 See [example_output](./example_output/).
+
+## Contributing
+
+Contributions are welcome!
+
+- Let us know if this works or doesn't work on your hardware/system/pfSense version.
+- Feel free to open an issue or a pull request if you want to improve/change or want additional features supported.
 
 ## Use of AI
 
